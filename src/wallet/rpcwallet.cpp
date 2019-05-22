@@ -312,7 +312,7 @@ UniValue setaccount(const JSONRPCRequest& request)
         // Detect when changing the account of an address that is the 'unused current key' of another account:
         if (pwallet->mapAddressBook.count(dest))
         {
-            string strOldAccount = pwallet->mapAddressBook[dest].name;
+            std::string strOldAccount = pwallet->mapAddressBook[dest].name;
             if (dest == GetAccountDestination(pwallet, strOldAccount))
                 GetAccountDestination(pwallet, strOldAccount, true);
         }
@@ -1167,7 +1167,7 @@ public:
             if (!IsSolvable(*pwallet, witscript)) {
                 return false;
             }
-            return ExtractDestination(witscript, result)
+            return ExtractDestination(witscript, result);
         }
         return false;
     }
@@ -2928,7 +2928,7 @@ UniValue fundrawtransaction(const JSONRPCRequest& request)
                 throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "changeAddress must be a valid bitzeny address");
             }
 
-            changeAddress = dest;
+            coinControl.destChange = dest;
         }
 
         if (options.exists("changePosition"))
