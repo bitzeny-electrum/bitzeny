@@ -4305,14 +4305,14 @@ bool CWallet::ParameterInteraction()
     bSpendZeroConfChange = gArgs.GetBoolArg("-spendzeroconfchange", DEFAULT_SPEND_ZEROCONF_CHANGE);
     fWalletRbf = gArgs.GetBoolArg("-walletrbf", DEFAULT_WALLET_RBF);
 
-    g_address_type = ParseOutputType(GetArg("-addresstype", ""));
+    g_address_type = ParseOutputType(gArgs.GetArg("-addresstype", ""));
     if (g_address_type == OUTPUT_TYPE_NONE) {
-        return InitError(strprintf(_("Unknown address type '%s'"), GetArg("-addresstype", "")));
+        return InitError(strprintf(_("Unknown address type '%s'"), gArgs.GetArg("-addresstype", "")));
     }
 
-    g_change_type = ParseOutputType(GetArg("-changetype", ""), g_address_type);
+    g_change_type = ParseOutputType(gArgs.GetArg("-changetype", ""), g_address_type);
     if (g_change_type == OUTPUT_TYPE_NONE) {
-        return InitError(strprintf(_("Unknown change type '%s'"), GetArg("-changetype", "")));
+        return InitError(strprintf(_("Unknown change type '%s'"), gArgs.GetArg("-changetype", "")));
     }
 
     return true;
@@ -4381,8 +4381,6 @@ int CMerkleTx::GetBlocksToMaturity() const
 bool CMerkleTx::AcceptToMemoryPool(const CAmount& nAbsurdFee, CValidationState& state)
 {
     return ::AcceptToMemoryPool(mempool, state, tx, true, nullptr, nullptr, false, nAbsurdFee);
-}
-
 }
 
 static const std::string OUTPUT_TYPE_STRING_LEGACY = "legacy";
