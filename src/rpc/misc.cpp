@@ -173,7 +173,7 @@ public:
         obj.push_back(Pair("iswitness", true));
         obj.push_back(Pair("witness_version", 0));
         obj.push_back(Pair("witness_program", HexStr(id.begin(), id.end())));
-        if (pwalletMain && pwalletMain->GetPubKey(CKeyID(id), pubkey)) {
+        if (pwallet && pwallet->GetPubKey(CKeyID(id), pubkey)) {
             obj.push_back(Pair("pubkey", HexStr(pubkey)));
         }
         return obj;
@@ -190,7 +190,7 @@ public:
         CRIPEMD160 hasher;
         uint160 hash;
         hasher.Write(id.begin(), 32).Finalize(hash.begin());
-        if (pwalletMain && pwalletMain->GetCScript(CScriptID(hash), subscript)) {
+        if (pwallet && pwallet->GetCScript(CScriptID(hash), subscript)) {
             obj.push_back(Pair("hex", HexStr(subscript.begin(), subscript.end())));
         }
         return obj;
@@ -259,7 +259,7 @@ UniValue validateaddress(const JSONRPCRequest& request)
     ret.push_back(Pair("isvalid", isValid));
     if (isValid)
     {
-        string currentAddress = EncodeDestination(dest);
+        std::string currentAddress = EncodeDestination(dest);
         ret.push_back(Pair("address", currentAddress));
 
         CScript scriptPubKey = GetScriptForDestination(dest);
