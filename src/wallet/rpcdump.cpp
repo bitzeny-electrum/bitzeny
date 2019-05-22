@@ -214,7 +214,7 @@ void ImportScript(CWallet* const pwallet, const CScript& script, const std::stri
 void ImportAddress(CWallet* const pwallet, const CTxDestination& dest, const std::string& strLabel)
 {
     CScript script = GetScriptForDestination(dest);
-    ImportScript(script, strLabel, false);
+    ImportScript(pwallet, script, strLabel, false);
     // add to address book or update label
     if (IsValidDestination(dest))
         pwallet->SetAddressBook(dest, strLabel, "receive");

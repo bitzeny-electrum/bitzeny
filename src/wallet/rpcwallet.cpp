@@ -183,7 +183,7 @@ UniValue getnewaddress(const JSONRPCRequest& request)
 }
 
 
-CTxDestination GetAccountDestination(string strAccount, bool bForceNew=false)
+CTxDestination GetAccountDestination(CWallet* const pwallet, std::string strAccount, bool bForceNew=false)
 {
     CTxDestination dest;
     if (!pwallet->GetAccountDestination(dest, strAccount, bForceNew)) {
@@ -222,7 +222,7 @@ UniValue getaccountaddress(const JSONRPCRequest& request)
 
     UniValue ret(UniValue::VSTR);
 
-    ret = EncodeDestination(GetAccountDestination(strAccount));
+    ret = EncodeDestination(GetAccountDestination(pwallet, strAccount));
     return ret;
 }
 
@@ -313,8 +313,8 @@ UniValue setaccount(const JSONRPCRequest& request)
         if (pwallet->mapAddressBook.count(dest))
         {
             string strOldAccount = pwallet->mapAddressBook[dest].name;
-            if (dest == GetAccountDestination(strOldAccount))
-                GetAccountDestination(strOldAccount, true);
+            if (dest == GetAccountDestination(pwallet, strOldAccount))
+                GetAccountDestination(pwallet, strOldAccount, true);
         }
         pwallet->SetAddressBook(dest, strAccount, "receive");
     }
@@ -1039,7 +1039,7 @@ UniValue sendmany(const JSONRPCRequest& request)
         }
     }
 
-    set<CTxDestination> destinations;
+    std::set<CTxDestination> destinations;
     std::vector<CRecipient> vecSend;
 
     CAmount totalAmount = 0;
@@ -1218,7 +1218,7 @@ UniValue addwitnessaddress(const JSONRPCRequest& request)
 
     if (request.fHelp || request.params.size() < 1 || request.params.size() > 2)
     {
-        string msg = "addwitnessaddress \"address\" ( p2sh )\n"
+        std::string msg = "addwitnessaddress \"address\" ( p2sh )\n"
             "\nAdd a witness address for a script (with pubkey or redeemscript known).\n"
             "It returns the witness script.\n"
 
@@ -1306,7 +1306,7 @@ UniValue ListReceived(CWallet * const pwallet, const UniValue& params, bool fByA
             filter = filter | ISMINE_WATCH_ONLY;
 
     // Tally
-    map<CTxDestination, tallyitem> mapTally;
+    std::map<CTxDestination, tallyitem> mapTally;
     for (const std::pair<uint256, CWalletTx>& pairWtx : pwallet->mapWallet) {
         const CWalletTx& wtx = pairWtx.second;
 
